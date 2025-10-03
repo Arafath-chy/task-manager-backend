@@ -4,7 +4,8 @@ const taskSchema = new mongoose.Schema({
   title: String,
   dueDate: String,
   priority: String,
-  category: String
+  category: String,
+  description: String
 });
 
 module.exports = mongoose.model('Task', taskSchema);
