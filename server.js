@@ -17,11 +17,19 @@ app.get("/tasks", async (req, res) => {
   res.json(tasks);
 });
 
-app.post("/tasks", async (req, res) => {
-  const task = new Task(req.body);
+app.post('/tasks', async (req, res) => {
+  const { title, dueDate, priority, category, description } = req.body;
+  const task = new Task({ title, dueDate, priority, category, description });
   await task.save();
-  res.json(task);
+  res.status(201).json(task);
 });
+
+
+// app.post("/tasks", async (req, res) => {
+//   const task = new Task(req.body);
+//   await task.save();
+//   res.json(task);
+// });
 
 app.delete("/tasks/:id", async (req, res) => {
   await Task.findByIdAndDelete(req.params.id);
