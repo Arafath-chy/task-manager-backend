@@ -18,6 +18,7 @@ app.get("/tasks", async (req, res) => {
 });
 
 app.post('/tasks', async (req, res) => {
+  console.log("Incoming task:", req.body);
   const { title, dueDate, priority, category, description } = req.body;
   const task = new Task({ title, dueDate, priority, category, description });
   await task.save();
