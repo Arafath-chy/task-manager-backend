@@ -25,12 +25,10 @@ app.post('/tasks', async (req, res) => {
   res.status(201).json(task);
 });
 
-
-// app.post("/tasks", async (req, res) => {
-//   const task = new Task(req.body);
-//   await task.save();
-//   res.json(task);
-// });
+app.put('/tasks/:id', async (req, res) => {
+  const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  res.json(updatedTask);
+});
 
 app.delete("/tasks/:id", async (req, res) => {
   await Task.findByIdAndDelete(req.params.id);

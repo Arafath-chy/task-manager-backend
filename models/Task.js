@@ -5,7 +5,11 @@ const taskSchema = new mongoose.Schema({
   dueDate: String,
   priority: String,
   category: String,
-  description: String
+  description: String,
+  completed: {
+    type: Boolean,
+    default: false
+  }
 });
 
 module.exports = mongoose.model('Task', taskSchema);
