@@ -13,25 +13,41 @@ mongoose.connect(process.env.MONGO_URI, {
 });
 
 app.get("/tasks", async (req, res) => {
-  const tasks = await Task.find();
+  const { userId } = req.query;
+  if (!userId) return res.status(400).json({ error: "Missing userId" });
+
+  const tasks = await Task.find({ userId });
   res.json(tasks);
 });
 
-app.post('/tasks', async (req, res) => {
-  console.log("Incoming task:", req.body);
-  const { title, dueDate, priority, category, description } = req.body;
-  const task = new Task({ title, dueDate, priority, category, description });
+app.post("/tasks", async (req, res) => {
+  const { title, dueDate, priority, category, description, userId } = req.body;
+  if (!userId) return res.status(400).json({ error: "Missing userId" });
+
+  const task = new Task({ title, dueDate, priority, category, description, userId });
   await task.save();
   res.status(201).json(task);
 });
 
-app.put('/tasks/:id', async (req, res) => {
-  const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.json(updatedTask);
+
+app.put("/tasks/:id", async (req, res) => {
+  const { userId } = req.body;
+  const task = await Task.findById(req.params.id);
+  if (!task) return res.status(404).json({ error: "Task not found" });
+  if (task.userId !== userId) return res.status(403).json({ error: "Unauthorized" });
+
+  Object.assign(task, req.body);
+  await task.save();
+  res.json(task);
 });
 
 app.delete("/tasks/:id", async (req, res) => {
-  await Task.findByIdAndDelete(req.params.id);
+  const { userId } = req.body;
+  const task = await Task.findById(req.params.id);
+  if (!task) return res.status(404).json({ error: "Task not found" });
+  if (task.userId !== userId) return res.status(403).json({ error: "Unauthorized" });
+
+  await task.deleteOne();
   res.json({ message: "Task deleted" });
 });
 

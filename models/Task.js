@@ -6,10 +6,8 @@ const taskSchema = new mongoose.Schema({
   priority: String,
   category: String,
   description: String,
-  completed: {
-    type: Boolean,
-    default: false
-  }
+  completed: { type: Boolean, default: false },
+  userId: { type: String, required: true }
 });
 
 module.exports = mongoose.model('Task', taskSchema);
